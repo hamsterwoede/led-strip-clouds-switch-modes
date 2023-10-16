@@ -18,7 +18,7 @@ function Wolk (Lengte: number) {
     } else {
         WolkAan = false
     }
-    basic.pause(500)
+    basic.pause(5000 / Snelheid)
 }
 input.onButtonPressed(Button.A, function () {
     basic.showLeds(`
@@ -29,6 +29,16 @@ input.onButtonPressed(Button.A, function () {
         . # # # .
         `)
     State = 1
+})
+input.onPinPressed(TouchPin.P2, function () {
+    basic.showLeds(`
+        . # # # .
+        . . . # .
+        . . # # .
+        . # . . .
+        . # # # .
+        `)
+    State = 2
 })
 function RGBLed () {
     if (!(isBright)) {
@@ -65,6 +75,16 @@ input.onButtonPressed(Button.B, function () {
         `)
     State = 2
 })
+input.onPinPressed(TouchPin.P1, function () {
+    basic.showLeds(`
+        . # # . .
+        . . # . .
+        . . # . .
+        . . # . .
+        . # # # .
+        `)
+    State = 1
+})
 function BlauweLucht () {
     if (KleurWaarde > 230) {
         RuisFactor = RuisFactor + randint(-5, 0) / RuisSchaal
@@ -80,9 +100,10 @@ function BlauweLucht () {
     }
     strip.show()
     strip.shift(1)
-    basic.pause(500)
+    basic.pause(5000 / Snelheid)
 }
 let WolkLengte = 0
+let Snelheid = 0
 let KleurWaarde = 0
 let State = 0
 let strip: neopixel.Strip = null
@@ -99,7 +120,8 @@ WolkAan = false
 strip = neopixel.create(DigitalPin.P0, 6, NeoPixelMode.RGB)
 State = 0
 KleurWaarde = 200
-let Snelheid = 10
+Snelheid = 10
+let WolkKans = 40
 strip.showColor(neopixel.hsl(KleurWaarde, 255, 50))
 basic.showLeds(`
     . # # # .
@@ -114,7 +136,7 @@ basic.forever(function () {
             Wolk(WolkLengte)
         } else {
             BlauweLucht()
-            if (randint(0, 40) > 39) {
+            if (randint(0, WolkKans) > WolkKans - 1) {
                 WolkLengte = randint(1, 10)
                 WolkAan = true
             }
